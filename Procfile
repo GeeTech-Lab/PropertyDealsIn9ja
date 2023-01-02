@@ -1,0 +1,1 @@
+web: gunicorn propertyDealsIn9ja.wsgi

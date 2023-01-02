@@ -1,0 +1,29 @@
+py manage.py makemigrateions --dry-run --verbosity 3
+pip install coverage
+coverage run --omit='*/ascons_venv/*' manage.py test
+coverage html
+pip install djangorestframework
+
+run on cmd Set-ExecutionPolicy Unrestricted -Scope Process
+
+docker build --tag <imagename>:<version> .
+docker run --publish 8000:8000 kwench_hunger
+
+# pushing to docker-hub
+docker tag <local_image:tag_name> <username/production_image:tag_name>
+docker tag kwench_hunger:v1 geetech/kwench_hunger:production
+docker push <username/production_image:tag_name>
+docker push geetech/kwench_hunger:production
+
+# Deploying to heroku
+pip install django-heroku
+heroku container:login
+heroku create kwenchhonga
+heroku container:push web -a=kwenchhonga
+heroku container:release web -a kwenchhonga
+
+# Setting environment variables in heroku
+heroku config:add ALLOWED_HOST=* -a kwenchhonga
+
+# other heroku commands
+heroku logs --tail -a kwenchhonga

@@ -1,0 +1,9 @@
+build:
+  docker:
+    web: Dockerfile
+  heroku:
+    app: propertydealsin9ja
+    stack: container
+
+run:
+  web: docker-compose up

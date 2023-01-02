@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%*#vd8z9(rj0fyv)oimes0rpe3%mj#9hc&!@%s+!8v@t1luk%#'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get("DEBUG", 1)))
@@ -20,7 +20,6 @@ DEBUG = bool(int(os.environ.get("DEBUG", 1)))
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
 INSTALLED_APPS = [
     'channels',
     'django.contrib.admin',
@@ -114,6 +113,30 @@ DATABASES = {
     }
 }
 
+DB_USERNAME = os.environ.get("POSTGRES_USER")
+DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
+DB_DATABASE = os.environ.get("POSTGRES_DB")
+DB_HOST = os.environ.get("POSTGRES_HOST")
+DB_PORT = os.environ.get("POSTGRES_PORT")
+DB_IS_AVAIL = all([
+    DB_USERNAME,
+])
+
+POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == "1"
+
+if DB_IS_AVAIL and POSTGRES_READY:
+    DATABASES = {
+        "default": {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_DATABASE,
+            'USER': DB_USERNAME,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT
+        }
+    }
+print(DATABASES)
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -181,11 +204,9 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_URL = 'accounts/login'
 LOGIN_REDIRECT_URL = 'home'
-LOGOUT_URL = 'accounts/logout'
-LOGOUT_REDIRECT_URL = 'home'
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '654243012660-t26a053klabkujq0p87pea3tfprf6hpp.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -219,12 +240,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Email Settings...
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'propertydeals9ja@gmail.com'
-EMAIL_HOST_PASSWORD = 'djkyfqovubziqjne'
-EMAIL_USE_TLS = True
-SUPPORT_EMAIL = 'propertydeals9ja@gmail.com'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+SUPPORT_EMAIL = os.environ.get('SUPPORT_EMAIL')
 
 # This validates the file size...
 FILE_UPLOAD_PERMISSION = 0o640
@@ -246,7 +267,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_API_KEY"
+GOOGLE_MAPS_API_KEY = "YOU_SECRET_KEY"
 
 import tinify
-tinify.key = "tC5sWsRfcPMvxHYF2kQFCpMj5yNKFND3"
+tinify.key = os.environ.get('tinify_key')
