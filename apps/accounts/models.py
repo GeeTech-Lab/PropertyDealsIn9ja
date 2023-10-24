@@ -30,6 +30,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_agent = models.BooleanField(default=False)
+    is_on_promo = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -73,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def get_user_initials(self):
-        return f"{self.full_name.title()[0:1]}"
+        return f"{self.full_name.title()[:1]}"
 
 
 @receiver(pre_save, sender=User)

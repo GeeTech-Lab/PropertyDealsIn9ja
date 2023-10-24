@@ -10,7 +10,6 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/
 import os
 import pathlib
 import dotenv
-
 from django.core.wsgi import get_wsgi_application
 
 CURRENT_DIR = pathlib.Path(__file__).resolve().parent

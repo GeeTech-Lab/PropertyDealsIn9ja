@@ -13,7 +13,7 @@
 			<div class="row">
 				<div class="col-xl-6">
 					<div class="breadcrumb_content">
-						<h4 class="breadcrumb_title">Add Your Enquiry</h4>
+						<h4 class="breadcrumb_title">Make Enquiry</h4>
 						<ol class="breadcrumb">
 						    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
 						    <li class="breadcrumb-item active" aria-current="page">Create Enquiry</li>
@@ -33,7 +33,7 @@
 					<div class="sign_up_form inner_page">
 						<div class="heading">
 							<h3 class="text-center">Enquire to get the best from us</h3>
-							<p class="text-center">Fill out the form below and one of our representatives in your region will contact you.</p>
+							<p class="text-center">Fill out the form below and one of our representatives will contact you.</p>
 						</div>
 						<div class="details">
 							<form method="POST" action="{{ request.path }}">
@@ -97,7 +97,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label><small>Inspection Date</small></label>
+									<label><small>Inspection Date(optional)</small></label>
 									{% render_field form.inspection_date|attr:"required"|attr:"type:date"|attr:"min:{new Date().toISOString().split('T')[0]}" class="form-control" %}
 								</div>
 								<div class="form-group">

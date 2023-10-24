@@ -1,4 +1,5 @@
 {% load static %}
+{% load socialaccount %}
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -62,6 +63,10 @@
         <script type="text/javascript" src="{% static 'toastr/htmx.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'toastr/toastr.min.js' %}"></script>
 
+        <!-- using iziToast -->
+        <script src="{% static 'iziToast/js/iziToast.min.js' %}"></script>
+        <script src="{% static 'iziToast/notification.js' %}"></script>
+
         {% if messages %}
             {% for message in messages %}
                 {% if message.tags == 'success' %}
@@ -75,9 +80,6 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
-        
-        {% block js %}
-        {% endblock js %}
         <script>
             var bsCarouselItems = 1;
             if($('.bs_carousel .carousel-item').length){
@@ -125,11 +127,13 @@
             }
         </script>
 
-
         <script>
             document.body,addEventListener('htmx:configRequest', (event) => {
                 event.detail.headers['X-CSRFToken'] = "{{ csrf_token }}";
             })
         </script>
+
+        {% block js %}
+        {% endblock js %}
     </body>
 </html>

@@ -134,6 +134,10 @@ class PropertyCreateView(LoginRequiredMixin, View):
         total_balance = 0
         if form.is_valid():
             f = form.save(commit=False)
+            if request.user.is_on_promo:
+                self.save_property(f, my_files, state, city)
+                messages.success(self.request, "Property added successfully")
+                return redirect("properties:get_my_property_list")
             total_balance = self.upload_price
             # Update total_balance if featured button was clicked
             if f.featured:
@@ -142,21 +146,7 @@ class PropertyCreateView(LoginRequiredMixin, View):
             if wallet.balance >= total_balance:
                 # Debit wallet but dont dave yet...
                 wallet.balance = F('balance') - total_balance
-                # Update form and save...
-                f.uploaded_by = self.request.user.agent
-                f.property_image = my_files[0]
-                print(f"{my_files[0]} Saved successfully")
-                del my_files[0]
-                f.state = state
-                f.city = city
-                f.save()
-                for mf in my_files:
-                    img_doc = PropertyMedia.objects.create(
-                        img_property=f,
-                        property_image=mf,
-                        uploaded_by=self.request.user
-                    )
-                    img_doc.save()
+                self.save_property(f, my_files, state, city)
                 # After saving the files then save wallet...
                 wallet.save()
                 # Update wallet transaction...
@@ -182,6 +172,22 @@ class PropertyCreateView(LoginRequiredMixin, View):
         }
         messages.error(self.request, "You currently have insufficient balance")
         return render(request, self.template_name, context)
+
+    def save_property(self, f, my_files, state, city):
+        f.uploaded_by = self.request.user.agent
+        f.property_image = my_files[0]
+        print(f"{my_files[0]} Saved successfully")
+        del my_files[0]
+        f.state = state
+        f.city = city
+        f.save()
+        for mf in my_files:
+            img_doc = PropertyMedia.objects.create(
+                img_property=f,
+                property_image=mf,
+                uploaded_by=self.request.user
+            )
+            img_doc.save()
 
 
 # def upload_file(request):

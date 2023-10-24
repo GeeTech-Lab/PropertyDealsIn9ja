@@ -1,3 +1,5 @@
+import pdb
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Avg
@@ -87,42 +89,57 @@ class AgentReviewView(View):
 
 
 class AgentCreateView(LoginRequiredMixin, View):
-    templates = "agents/create.html"
+    template_name = "agents/create.html"
 
     def get(self, request):
-        form = SingleAgentForm()
-        agency_form = AgencyForm()
         file_path = "propertyDealsIn9ja/states-and-cities.json"
         states = get_states_only(file_path)
         context = {
-            "form": form,
-            "agency_form": agency_form,
             "states": states,
         }
-        return render(request, self.templates, context)
+        return render(request, self.template_name, context)
 
     def post(self, request):
-        agent_form = SingleAgentForm(request.POST, request.FILES)
-        agency_form = AgencyForm(request.POST, request.FILES)
-        state = self.request.POST.get("state")
-        city = self.request.POST.get("city")
+        # Get form data from the request
+        business_name = request.POST.get("business_name")
+        business_email = request.POST.get("business_email")
+        business_phone = request.POST.get("business_phone")
+        business_logo = request.FILES.get("business_logo")  # Use FILES for file uploads
+        state = request.POST.get("state")
+        city = request.POST.get("city")
+        street_address = request.POST.get("street_address")
+        is_single_agent = request.POST.get("is_agentForm")
 
-        if agent_form.is_valid():
-            f = agent_form.save(commit=False)
-            f.business_user = self.request.user
-            f.state = state
-            f.city = city
-            f.save()
-            messages.success(self.request, "Your agent business registered with us successfully")
-            # user = User.objects.get(username=self.request.user.username)
-            # user.is_agent = True
-            # user.save()
-        context = {
-            "form": agent_form,
-            "agency_form": agency_form,
-        }
-        messages.success(self.request, "Your Agency has been registered successfully")
-        return redirect("profiles:profile_detail", slug=self.request.user.profile.slug)
+        print(f"""
+            business_name: {business_name}
+            business_email: {business_email}
+            business_phone: {business_phone}
+            business_logo: {business_logo}
+            state: {state}
+            city: {city}
+            street_address: {street_address}
+            is_single_agent: {is_single_agent} {type(is_single_agent)}
+        """)
+        # pdb.set_trace()
+        agent = Agent.objects.create(
+            business_user=request.user,
+            business_name=business_name,
+            business_email=business_email,
+            business_phone=business_phone,
+            business_logo=business_logo,  # Use FILES for file uploads
+            state=state,
+            city=city,
+            street_address=street_address,
+        )
+        if is_single_agent != "True":
+            agent.is_an_agency = True
+            agent.save()
+        agent.save()
+        # Return a JSON response to the frontend
+        return JsonResponse({
+            "status": "success",
+            "message": "Agent created successfully"
+        })
 
 
 class GetStateCities(View):

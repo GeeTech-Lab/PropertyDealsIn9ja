@@ -1,7 +1,6 @@
 import json
 from os import stat
 import os.path
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,7 +10,6 @@ from django.shortcuts import redirect, render
 from django.views.generic import DetailView, UpdateView
 from django.views.generic.base import View
 from tinify import tinify
-
 from apps.profiles.models import Profile
 from apps.wallets.models import Wallet
 from propertyDealsIn9ja.utils import get_states, get_states_only, get_cities_only

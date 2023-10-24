@@ -4,6 +4,7 @@ from django.utils import timezone
 
 class Notification(models.Model):
     NOTIFICATION_TYPES = (
+        (0, 'System_Notification'),
         (1, 'Transaction_Message'),
         (2, 'Property_Message'),
         (3, 'Inbox_Message'),

@@ -15,7 +15,7 @@
         <div class="breadcrumb_content style2">
             <h2 class="breadcrumb_title">Add New Property</h2>
             <p>Please fill in all required fields to upload your property.</p>
-            {% if upload_price == 0 %}
+            {% if request.user.is_on_promo %}
                 <p>Hurry!!! We are on promo!</p>
             {% else %}
                 <p>Wallet Balance: {{wallet.currency}}{{wallet.balance|intcomma}}</p>
@@ -202,12 +202,12 @@
                             {% render_field form.featured|attr:"id:customSwitch1"|attr:"type:checkbox" class="custom-control-input" %}
                             <label class="custom-control-label" for="customSwitch1">Featured</label>
                             <br>
-                            {% if featured_price > 0 %}
+                            {% if request.user.is_on_promo %}
+                                <small>Hurry we are on promo!!!... Your property will be promoted to the front page,
+                                where our clients will be the first to see it.</small>
+                            {% elif featured_price > 0 %}
                                 <small>This will incur an additional N{{featured_price}} fee,
                                 but your property will be promoted to the front page,
-                                where our clients will be the first to see it.</small>
-                            {% else %}
-                                <small>Hurry we are on promo!!!... Your property will be promoted to the front page,
                                 where our clients will be the first to see it.</small>
                             {% endif %}
                         </div>
@@ -215,7 +215,7 @@
                     <div class="col-xl-12 mt10">
                         <div class="my_profile_setting_input">
                             <button type="submit" id="send" class="btn dbxshad btn-lg btn-thm circle">
-                                {% if upload_price == 0 %}
+                                {% if request.user.is_on_promo %}
                                     <i class="fa fa-upload"></i> Upload Property
                                 {% else %}
                                     <i class="fa fa-upload"></i> <small>Upload Property for {{wallet.currency}}{{upload_price|intcomma}}</small>

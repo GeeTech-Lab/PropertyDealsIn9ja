@@ -1,5 +1,4 @@
 from autoslug import AutoSlugField
-# from cloudinary.models import CloudinaryField
 from django.db import models
 from django.urls import reverse
 from django_countries.fields import CountryField
@@ -9,7 +8,7 @@ from apps.accounts.models import User
 
 
 def upload_dir(instance, filename):
-    return "{}/{}/{}".format("user_photos", instance.user.username, filename)
+    return f"user_photos/{instance.user.username}/{filename}"
 
 
 class Gender(models.TextChoices):
@@ -45,5 +44,4 @@ class Profile(TimeStampedUUIDModel):
     def image_url(self):
         if self.image:
             return self.image.url
-        return 'https://res.cloudinary.com/geetechlab-com/image/upload/v1583147406/nwaben.com/user_azjdde_sd2oje.jpg'
-
+        return 'https://res.cloudinary.com/geetechlab-com/image/upload/v1669891586/propertyDealzin9ja/sale-g4a8533349_640_gkys9q.jpg'

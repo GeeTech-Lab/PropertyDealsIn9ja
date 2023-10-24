@@ -37,14 +37,16 @@
                                   <div class="thumb">
                                       <div class="fp_single_item_slider">
                                           <div class="fp_single_item_slider">
-											<div class="item">
-												<img class="img-whp" style="height: 250px;" src="{{p.check_image_url}}" alt="{{p.name}}">
-											</div>
-											{% for i in p.property_images.all %}
-												<div class="item">
-													<img class="img-whp" style="height: 250px;" src="{{i}}" alt="{{i}}">
-												</div>
-											{% endfor %}
+                                            {% if p.check_image_url %}
+                                                <div class="item">
+                                                    <img class="img-whp" style="height: 250px;" src="{{p.check_image_url}}" alt="{{p.name}}">
+                                                </div>
+                                            {% endif %}
+                                            {% for i in p.property_images.all %}
+                                                <div class="item">
+                                                    <img class="img-whp" style="height: 250px;" src="{{i.url}}" alt="{{i}}">
+                                                </div>
+                                            {% endfor %}
                                       </div>
                                       <div class="thmb_cntnt style2">
                                           <ul class="tag mb0">
@@ -110,7 +112,7 @@
                               </div>
                           </div>
                         {% endfor %}
-						<div class="col-lg-12 mt20">
+						<div class="col-md-12 mt20">
 							<div class="mbp_pagination">
 								<ul class="page_navigation">
 								    <li class="page-item disabled">
@@ -120,9 +122,6 @@
 								    <li class="page-item active" aria-current="page">
 								    	<a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
 								    </li>
-								    <li class="page-item"><a class="page-link" href="#">3</a></li>
-								    <li class="page-item"><a class="page-link" href="#">...</a></li>
-								    <li class="page-item"><a class="page-link" href="#">29</a></li>
 								    <li class="page-item">
 								    	<a class="page-link" href="#"><span class="flaticon-right-arrow"></span></a>
 								    </li>

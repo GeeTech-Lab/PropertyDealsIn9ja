@@ -23,6 +23,7 @@
 		</div>
 	</section>
 
+
 	<!-- Service Section Area -->
 	<section class="our-service pb30">
 		<div class="container">
@@ -34,8 +35,8 @@
                                 <span class="fa fa-user"></span>
                             </div>
                             <div class="details">
-                                <h4>Register(Single Agent)</h4>
-                                <p>Register as a Single Agent</p>
+                                <h4>Register(Individual)</h4>
+                                <p>Register as an Individual Agent</p>
                             </div>
                         </div>
                     </a>
@@ -47,7 +48,7 @@
                                 <span class="fa fa-users"></span>
                             </div>
                             <div class="details">
-                                <h4>Register(Agency)</h4>
+                                <h4>Register(Company)</h4>
                                 <p>Register as an Agency</p>
                             </div>
                         </div>
@@ -56,17 +57,6 @@
 			</div>
 		</div>
 	</section>
-
-
-
-
-
-
-
-
-
-
-
 
 
     <div class="sign_up_modal modal fade agent_modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -80,54 +70,60 @@
                         <div class="row">
                             <div class="col-lg-12 col-xl-12">
                                 <div class="login_form">
-                                    <form method="post" action="" name="agenForm" enctype="multipart/form-data">
+                                    <form method="post" name="agentForm" enctype="multipart/form-data">
                                         {% csrf_token %}
+                                        <div class="notification_message" style="display: none;"></div>
+
                                         <input type="hidden" name="next" value="{{ request.GET.next }}" />
+                                        <input type="hidden" id="is_individual" name="is_individual" checked/>
 
                                         <div class="heading">
-                                            <h4>Register(Single Agent)</h4>
+                                            <h4>Register(Individual)</h4>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field form.business_name|attr:"required"|attr:"type:text"|attr:"placeholder:Your Business Name" class="form-control" %}
+                                            <input type="text" name="business_name" placeholder="Your Name" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-user"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field form.business_email|attr:"required"|attr:"type:email"|attr:"placeholder:Your Business Email" class="form-control" %}
+                                            <input type="email" name="business_email" placeholder="Your Business Email" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-envelope"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field form.business_phone|attr:"required"|attr:"type:tel"|attr:"placeholder:Business Phone(+2348031234567)" class="form-control" %}
+                                            <input type="tel" name="business_phone" placeholder="Business Phone(+2348031234567)" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-phone"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field form.business_logo|attr:"required"|attr:"type:file" class="form-control" %}
+                                            <input type="file" name="business_logo" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-image"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-lg-6 col-xl-6">
-                                                <div class="input-group mb-2 mr-sm-2">
-                                                    <select id="selected_state" name="state" required class="form-control" data-live-search="true" data-width="100%">
-                                                        <option value="" disabled selected>Select State</option>
-                                                        {% for s in states %}
-                                                            {% if s == request.user.profile.state %}
-                                                                <option value="{{request.user.profile.state}}" selected>{{request.user.profile.state}}</option>
-                                                            {% else %}
-                                                                <option value="{{s}}">{{s}}</option>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+                                                <select id="selected_state" name="state" class="form-control" data-live-search="true" data-width="100%" required>
+                                                    <option value="" disabled selected>Select State</option>
+                                                    {% for s in states %}
+                                                        {% if s == request.user.profile.state %}
+                                                            <option value="{{request.user.profile.state}}" selected>{{request.user.profile.state}}</option>
+                                                        {% else %}
+                                                            <option value="{{s}}">{{s}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div class="col-lg-6 col-xl-6">
-                                                <select id="selected_city" name="city" required class="form-control" data-live-search="true" data-width="100%">
+                                                <select id="selected_city" name="city" class="form-control" data-live-search="true" data-width="100%" required>
                                                     {% if request.user.profile.city %}
                                                         <option value="{{request.user.profile.city}}" disabled selected>{{request.user.profile.city}}</option>
                                                     {% else %}
@@ -136,13 +132,15 @@
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field form.street_address|attr:"required"|attr:"type:text"|attr:"placeholder:Office street address" class="form-control" %}
+                                            <input type="text" name="street_address" placeholder="Office street address" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-map-pin"></i></div>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-log btn-block btn-thm">Submit</button>
+
+                                        <button type="button" id="submit-agent-form" class="btn btn-log btn-block btn-thm">Submit</button>
                                     </form>
                                 </div>
                             </div>
@@ -198,57 +196,61 @@
                         <div class="row">
                             <div class="col-lg-12 col-xl-12">
                                 <div class="login_form">
-                                    <form method="post" action="" name="agenForm" enctype="multipart/form-data">
+                                    <form method="post" action="" name="agencyForm" enctype="multipart/form-data">
                                         {% csrf_token %}
+                                        <div class="notification_message" style="display: none;"></div>
                                         <input type="hidden" name="next" value="{{ request.GET.next }}" />
-
                                         <div class="heading">
-                                            <h4>Register(Agency)</h4>
+                                            <h4>Register(Company/Agency)</h4>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.business_name|attr:"required"|attr:"type:text"|attr:"placeholder:Your Business Name" class="form-control" %}
+                                            <input type="text" name="business_name" placeholder="Your Business Name" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-user"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.business_email|attr:"required"|attr:"type:email"|attr:"placeholder:Your Business Email" class="form-control" %}
+                                            <input type="email" name="business_email" placeholder="Your Business Email" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-envelope"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.business_phone|attr:"required"|attr:"type:tel"|attr:"placeholder:Business Phone(+2348031234567)" class="form-control" %}
+                                            <input type="tel" name="business_phone" placeholder="Business Phone(+2348031234567)" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-phone"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.agency_description|attr:"required"|attr:"type:text"|attr:"rows:4"|attr:"placeholder:Describe your agency" class="form-control" %}
+                                            <textarea name="agency_description" rows="4" placeholder="Describe your agency" class="form-control" required></textarea>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.business_logo|attr:"required"|attr:"type:file" class="form-control" %}
+                                            <input type="file" name="business_logo" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-image"></i></div>
                                             </div>
                                         </div>
+
                                         <div class="row">
                                             <div class="col-lg-6 col-xl-6">
-                                                <div class="input-group mb-2 mr-sm-2">
-                                                    <select id="agency_selected_state" name="state" required class="form-control" data-live-search="true" data-width="100%">
-                                                        <option value="" disabled selected>Select State</option>
-                                                        {% for s in states %}
-                                                            {% if s == request.user.profile.state %}
-                                                                <option value="{{request.user.profile.state}}" selected>{{request.user.profile.state}}</option>
-                                                            {% else %}
-                                                                <option value="{{s}}">{{s}}</option>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
+                                                <select id="agency_selected_state" name="state" class="form-control" data-live-search="true" data-width="100%" required>
+                                                    <option value="" disabled selected>Select State</option>
+                                                    {% for s in states %}
+                                                        {% if s == request.user.profile.state %}
+                                                            <option value="{{request.user.profile.state}}" selected>{{request.user.profile.state}}</option>
+                                                        {% else %}
+                                                            <option value="{{s}}">{{s}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div class="col-lg-6 col-xl-6">
-                                                <select id="agency_selected_city" name="city" required class="form-control" data-live-search="true" data-width="100%">
+                                                <select id="agency_selected_city" name="city" class="form-control" data-live-search="true" data-width="100%" required>
                                                     {% if request.user.profile.city %}
                                                         <option value="{{request.user.profile.city}}" disabled selected>{{request.user.profile.city}}</option>
                                                     {% else %}
@@ -257,13 +259,15 @@
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="input-group mb-2 mr-sm-2">
-                                            {% render_field agency_form.street_address|attr:"required"|attr:"type:text"|attr:"placeholder:Office street address" class="form-control" %}
+                                            <input type="text" name="street_address" placeholder="Office street address" class="form-control" required>
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text"><i class="fa fa-map-pin"></i></div>
                                             </div>
                                         </div>
-                                        <button type="submit" class="btn btn-log btn-block btn-thm">Submit</button>
+
+                                        <button type="button" id="submit-agency-form" class="btn btn-log btn-block btn-thm">Submit</button>
                                     </form>
                                 </div>
                             </div>
@@ -308,4 +312,125 @@
     </div>
 
 {% endblock %}
+
+
+{% block js %}
+    <!-- Single Agent Form -->
+    <script>
+        function showNotification(type, message) {
+            const notificationDiv = document.querySelector('.notification_message');
+            const alertType = {
+                'info': 'alert-primary',
+                'success': 'alert-success',
+                'warning': 'alert-warning',
+                'danger': 'alert-danger'
+            };
+
+            const alertIcon = {
+                'info': 'fa-circle-info fa-shake',
+                'success': 'fa-circle-check fa-shake',
+                'warning': 'fa-triangle-exclamation fa-shake',
+                'danger': 'fa-solid fa-radiation fa-spin'
+            };
+
+            const alertHTML = `
+                <div class="alert ${alertType[type]} alert-dismissible fade show" role="alert">
+                    <i class="fa-solid ${alertIcon[type]}"></i> ${message}.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+
+            notificationDiv.innerHTML = alertHTML;
+            notificationDiv.style.display = 'block';
+        }
+        $(document).ready(function() {
+            $("#submit-agent-form").click(function() {
+                const notificationDiv = document.querySelector('.notification_message');
+
+                var formData = new FormData($('form[name="agentForm"]')[0]);
+                formData.append("is_agentForm", "True"); // Add a flag for agenForm
+
+                $.ajax({
+                    url: "{% url 'agents:create' %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        // Handle the success response from the backend
+                        console.log("Form submitted successfully");
+
+                        if(data.status === "success"){
+                            showSuccessNotification(data.message);
+                            showNotification(data.status, data.message);
+                            setTimeout(function() {
+                                var previousPage = document.referrer;
+                                if (previousPage) {
+                                    window.location.href = previousPage;
+                                } else {
+                                    console.log("No previous page to redirect to.");
+                                    window.location.href = "{% url 'home' %}";
+                                }
+                            }, 5000);
+                        } else {
+                            showErrorNotification(data.message);
+                            showNotification(data.status, data.message)
+                        }
+                    },
+                    error: function(error) {
+                        // Handle errors
+                        console.error("Form submission error:", error);
+
+                        // Display an error message or perform error handling here
+                        showErrorNotification(error.message)
+                        showNotification(error.status, error.message)
+                    }
+                });
+            });
+
+
+            $("#submit-agency-form").click(function() {
+                var formData = new FormData($('form[name="agencyForm"]')[0]);
+                formData.append("is_agentForm", "False"); // Add a flag for agencyForm
+
+                $.ajax({
+                    url: "{% url 'agents:create' %}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        // Handle the success response from the backend
+                        console.log("Form submitted successfully");
+
+                        if(data.status === "success"){
+                            showSuccessNotification(data.message);
+                            showNotification(data.status, data.message);
+                            setTimeout(function() {
+                                var previousPage = document.referrer;
+                                if (previousPage) {
+                                    window.location.href = previousPage;
+                                } else {
+                                    console.log("No previous page to redirect to.");
+                                    window.location.href = "{% url 'home' %}";
+                                }
+                            }, 5000);
+                        } else {
+                            showErrorNotification(data.message);
+                            showNotification(data.status, data.message)
+                        }
+                    },
+                    error: function(error) {
+                        // Handle errors
+                        console.error("Form submission error:", error);
+
+                        // Display an error message or perform error handling here
+                        showErrorNotification(error.message)
+                        showNotification(error.status, error.message)
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock js %}
 

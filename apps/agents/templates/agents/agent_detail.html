@@ -242,32 +242,35 @@
 												{% include 'agents/review_list.html' %}
 
 												<div class="custom_hr"></div>
-												<div class="mbp_comment_form style2">
-													<h4>Write a Review</h4>
-													<form class="comments_form rate-form" action="" method="post" id="{{agent.slug|safe}}" >
-														{% csrf_token %}
-														<ul class="sspd_review">
-															<li class="list-inline-item">
-																<div class="rating-list">
-																	<button type="submit" class="my-rating-btn fa fa-star" id="first"></button>
-																	<button type="submit" class="my-rating-btn fa fa-star" id="second"></button>
-																	<button type="submit" class="my-rating-btn fa fa-star" id="third"></button>
-																	<button type="submit" class="my-rating-btn fa fa-star" id="fourth"></button>
-																	<button type="submit" class="my-rating-btn fa fa-star" id="fifth"></button>
-																</div>
-															</li>
-															<li class="list-inline-item review_rating_para">Your Rating & Review</li>
-														</ul>
-														<div class="form-group">
-														    <textarea class="form-control" id="comment-value" name="review_comment" rows="3" placeholder="Your review about this agent/agency" required></textarea>
-														</div>
-														{% if request.user.is_authenticated or request.user.is_superuser %}
-															<button type="submit" id="review-submit" class="btn btn-thm">Submit Review <span class="flaticon-right-arrow-1"></span></button>
-														{% else %}
-															<a href="{% url 'accounts:login' %}" class="btn btn-thm">Submit Review <span class="flaticon-right-arrow-1"></span></a>
-														{% endif %}
-													</form>
-												</div>
+												<!-- Write a review -->
+												{% if not request.user == agent.business_user %}
+													<div class="mbp_comment_form style2">
+														<h4>Write a Review</h4>
+														<form class="comments_form rate-form" action="" method="post" id="{{agent.slug|safe}}" >
+															{% csrf_token %}
+															<ul class="sspd_review">
+																<li class="list-inline-item">
+																	<div class="rating-list">
+																		<button type="submit" class="my-rating-btn fa fa-star" id="first"></button>
+																		<button type="submit" class="my-rating-btn fa fa-star" id="second"></button>
+																		<button type="submit" class="my-rating-btn fa fa-star" id="third"></button>
+																		<button type="submit" class="my-rating-btn fa fa-star" id="fourth"></button>
+																		<button type="submit" class="my-rating-btn fa fa-star" id="fifth"></button>
+																	</div>
+																</li>
+																<li class="list-inline-item review_rating_para">Your Rating & Review</li>
+															</ul>
+															<div class="form-group">
+																<textarea class="form-control" id="comment-value" name="review_comment" rows="3" placeholder="Your review about this agent/agency" required></textarea>
+															</div>
+															{% if request.user.is_authenticated or request.user.is_superuser %}
+																<button type="submit" id="review-submit" class="btn btn-thm">Submit Review <span class="flaticon-right-arrow-1"></span></button>
+															{% else %}
+																<a href="{% url 'accounts:login' %}" class="btn btn-thm">Submit Review <span class="flaticon-right-arrow-1"></span></a>
+															{% endif %}
+														</form>
+													</div>
+												{% endif %}
 											</div>
 										</div>
 									</div>
@@ -284,6 +287,7 @@
 								<div class="sidebar_advanced_search_widget">
 									<h4 class="mb25">Contact Agent</h4>
 									<form method="post" action="{% url 'inboxes:send_direct_msg' %}">
+										{% csrf_token %}
 										<input type="hidden" name="to_user" id="to_user" value="{{ agent.business_user.username }}">
 										<ul class="sasw_list mb0">
 											<li class="search_area">
@@ -291,7 +295,7 @@
 													<textarea
 														name="message" id="message"
 														class="form-control required"
-														rows="3"
+														rows="2"
 														required
 														placeholder="Write your message to this agent.">
 													</textarea>

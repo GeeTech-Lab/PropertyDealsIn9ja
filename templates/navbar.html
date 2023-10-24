@@ -28,29 +28,6 @@
                 <img class="logo2 img-fluid" src="https://res.cloudinary.com/geetechlab-com/image/upload/v1672595643/propertyDealzin9ja/header-logo2_pficy7.png" alt="header-logo2.png">
 <!--                <span>propertyDealsIn9ja</span>-->
             </a>
-            <!-- Responsive Menu Structure-->
-            <!--Note: declare the Menu style in the data-menu-style="horizontal" (options: horizontal, vertical, accordion) -->
-<!--            <div class="ht_left_widget float-left">-->
-<!--                <ul>-->
-<!--                    <li class="list-inline-item dn-1440">-->
-<!--                        <div class="ht_search_widget">-->
-<!--                            <div class="header_search_widget">-->
-<!--                                <form class="form-inline mailchimp_form">-->
-<!--                                    <input type="text" class="form-control" id="inlineFormInputName2" placeholder="What are you looking for?">-->
-<!--                                    <button type="submit" class="btn btn-primary"><span class="flaticon-magnifying-glass"></span></button>-->
-<!--                                </form>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </li>-->
-<!--                    <li class="list-inline-item list_s dib-1440 dn">-->
-<!--                        <div class="search_overlay">-->
-<!--                                <a id="search-button-listener" class="mk-search-trigger mk-fullscreen-trigger" href="#">-->
-<!--                                <span id="search-button"><i class="flaticon-magnifying-glass"></i></span>-->
-<!--                                </a>-->
-<!--                        </div>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
             <ul id="respMenu" class="ace-responsive-menu text-right" data-menu-style="horizontal">
                 <li><a href="{% url 'home' %}"><span class="title">Home</span></a></li>
                 <li><a href="{% url 'properties:list' %}"><span class="title">Properties</span></a></li>
@@ -63,7 +40,6 @@
                     <li class="list-inline-item list_s">
                         <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}">
                             <img class="rounded-circle" width="30px" height="30px" src="{{request.user.profile.image_url}}" alt="e1.png">
-<!--                            <span class="dn-1199">{{request.user.username}}</span>-->
                         </a>
                         <ul>
                             {% if request.user.is_staff %}
@@ -98,14 +74,16 @@
                             <span class="dn-lg">Login</span>
                         </a>
                     </li>
+<!--                    <li class="list-inline-item list_s">-->
+<!--                        <a href="#" class="btn flaticon-user" data-toggle="modal" data-target=".bd-example-modal-lg"> -->
+<!--                            <span class="dn-lg">Login/Register</span>-->
+<!--                        </a>-->
+<!--                    </li>-->
                 {% endif %}
             </ul>
         </nav>
     </div>
 </header>
-
-
-
     
 
     <!-- Main Header Nav For Mobile -->
@@ -114,11 +92,11 @@
             <div class="header stylehome1">
                 <div class="main_logo_home2 text-center">
                     <img class="nav_logo_img img-fluid mt20" src="https://res.cloudinary.com/geetechlab-com/image/upload/v1672595643/propertyDealzin9ja/header-logo2_pficy7.png" alt="pd9ja">
-                    {% if request.user.is_authenticated %}
-                        <span class="mt20">{{request.user.username}}</span>
-                    {% else %}
-                        <span class="mt20">propertyDealsIn9ja</span>
-                    {% endif %}
+<!--                    {% if request.user.is_authenticated %}-->
+<!--                        <span class="mt20">{{request.user.username}}</span>-->
+<!--                    {% else %}-->
+<!--                        <span class="mt20">propertyDealsIn9ja</span>-->
+<!--                    {% endif %}-->
                 </div>
                 <ul class="menu_bar_home2">
                     {% if request.user.is_authenticated %}
@@ -136,6 +114,7 @@
             </div>
         </div>
         <!-- /.mobile-menu -->
+
         <nav id="menu" class="stylehome1">
             <ul>
                 <li><a href="{% url 'home' %}">Home</a></li>
@@ -178,6 +157,7 @@
                 {% else %}
                     <li><a href="{% url 'accounts:login' %}"><span class="flaticon-user"></span> Login</a></li>
                     <li><a href="{% url 'accounts:signup' %}"><span class="flaticon-edit"></span> Register</a></li>
+<!--                    <li class="list-inline-item list_s"><a href="#" class="btn flaticon-user" data-toggle="modal" data-target=".bd-example-modal-lg"> <span class="dn-lg">Login/Register</span></a></li>-->
                 {% endif %}
             </ul>
         </nav>

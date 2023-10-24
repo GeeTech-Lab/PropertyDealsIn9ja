@@ -12,18 +12,17 @@ from apps.notifications.models import Notification
 
 
 def upload_dir(instance, filename):
-    return "{}/{}/{}/{}".format("property_uploads", instance.uploaded_by.business_name, instance.name, filename)
+    return f"property_uploads/{instance.uploaded_by.business_name}/{instance.name}/{filename}"
 
 
 def property_media_upload_dir(instance, filename):
-    return "{}/{}/{}".format("property_media_uploads", instance.img_property.uploaded_by.business_name, filename)
+    return f"property_media_uploads/{instance.img_property.uploaded_by.business_name}/{filename}"
 
 
 class Property(models.Model):
 
     class PropertyTypes(models.TextChoices):
         APARTMENT = 'Apartment'
-        LAND = 'Land'
         BQ = 'BQ'
         TERRACE = 'Terrace'
         SEMI_DETACHED = 'Semi Detached'
@@ -31,14 +30,17 @@ class Property(models.Model):
         OFFICE = 'Office'
         WAREHOUSE = 'Warehouse'
         COMMERCIAL = 'Commercial'
+        LAND = 'Land'
         OTHER = 'Other'
 
     class PropertyStatus(models.TextChoices):
         FOR_RENT = 'For Rent'
         FOR_SALE = 'For Sale'
         AUCTION = 'Auction'
-        SOLD = 'Sold'
-        RENTED = 'Rented'
+        LEASE = 'Lease'
+        SHORT_LET = 'Short Let'
+        # SOLD = 'Sold'
+        # RENTED = 'Rented'
 
     class PaymentPlan(models.TextChoices):
         MONTHLY = 'Mthly'
@@ -97,10 +99,6 @@ class Property(models.Model):
     def property_address(self):
         return f"{self.street_address} {self.local_area} {self.city} {self.state} {self.uploaded_by.business_user.profile.country.name}"
 
-    # @property
-    # def get_property_images(self):
-    #     return self.propertymedia_set.all()
-
 
 @receiver(post_save, sender=Property)
 def user_add_property_notification(sender, instance, *args, **kwargs):
@@ -109,7 +107,7 @@ def user_add_property_notification(sender, instance, *args, **kwargs):
     message = f"Your property of {prop.name} has been approved."
     notify = Notification(
         property=prop,
-        from_admin=sender,
+        from_admin="System Notifications",
         to_user=prop.uploaded_by.business_user,
         notification_type=2,
         message=message,

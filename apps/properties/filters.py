@@ -1,6 +1,4 @@
 import django_filters
-from django import forms
-
 from .models import Property
 
 
@@ -22,5 +20,3 @@ class PropertyFilter(django_filters.FilterSet):
             "state",
             "city",
         ]
-
-

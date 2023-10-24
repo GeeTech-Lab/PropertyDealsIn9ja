@@ -1,8 +1,4 @@
-import datetime
-
 from autoslug import AutoSlugField
-from django.core.files.storage import default_storage
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
@@ -76,15 +72,14 @@ class Agent(models.Model):
 
     def save(self, *args, **kwargs):
         agent_instance = self.business_user.username
-        get_current_user = User.objects.get(username=agent_instance)
         try:
+            get_current_user = User.objects.get(username=agent_instance)
             get_current_user.is_agent = True
             get_current_user.save()
-        except ModuleNotFoundError:
-            get_current_user.is_agent = False
-            get_current_user.save()
-            get_current_user.refresh_from_db()
-        super(Agent, self).save(args, kwargs)
+        except User.DoesNotExist:
+            # Handle the case where the user doesn't exist, e.g., create a new user
+            get_current_user = User.objects.create(username=agent_instance, is_agent=True)
+        super(Agent, self).save(*args, **kwargs)
 
 
 # === Deactivate user as agent & delete agent address if agent account was deleted ===
@@ -126,7 +121,7 @@ def agent_review_comment(sender, instance, *args, **kwargs):
     text_preview = review.comment[:50]
     message = f"{sender} just reviewed your agency."
     notify = Notification(
-        agent_message=agent,
+        # agent_message=agent,
         from_user=sender,
         to_user=agent,
         text_preview=text_preview,
@@ -143,7 +138,7 @@ class AgentMessage(models.Model):
     msg_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
-        return '{}-{}'.format(self.msg_content, self.msg_from)
+        return f'{self.msg_content}-{self.msg_from}'
 
     class Meta:
         ordering = ['msg_on']

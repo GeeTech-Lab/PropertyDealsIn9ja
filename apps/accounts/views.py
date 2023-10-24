@@ -192,21 +192,22 @@ class LoginView(View):
         password = request.POST.get('password')
 
         if email and password:
-            user = auth.authenticate(email=email, password=password)
-
-            if user:
-                # Login in users if user account is active...
-                if user.is_active:
-                    auth.login(request, user)
-                    messages.success(request, f"Welcome, {user.username} login was successful...")
-                    # This redirects user to previous page if not redirect user to home...
-                    if request.POST.get('next') != '':
-                        return redirect(request.POST.get('next'))
-                    return redirect('home')
-                # Display error message or redirect to login page.
-                messages.info(request, 'Account is not active,please check your email')
-                return render(request, 'accounts/login.html')
-
+            try:
+                if user := auth.authenticate(email=email, password=password):
+                    # Login in users if user account is active...
+                    if user.is_active:
+                        auth.login(request, user)
+                        messages.success(request, f"Welcome, {user.username} login was successful...")
+                        # This redirects user to previous page if not redirect user to home...
+                        if request.POST.get('next') != '':
+                            return redirect(request.POST.get('next'))
+                        return redirect('home')
+                    # Display error message or redirect to login page.
+                    messages.info(request, 'Account is not active,please check your email')
+                    return render(request, 'accounts/login.html')
+            except AttributeError or ValueError or Exception:
+                messages.warning(request, 'Invalid credentials, try again!!!.')
+                return redirect('accounts:login')
             messages.warning(request, 'Invalid credentials, try again!!!.')
             return redirect('accounts:login')
 
@@ -279,6 +280,7 @@ class CompletePasswordResetView(View):
                 messages.info(request, "Password link is invalid, please request for a new password")
                 return render(request, 'accounts/reset-password.html', context)
         except Exception as ex:
+            print(ex)
             return render(request, 'accounts/set-new-password.html', context)
 
     def post(self, request, uidb64, token):

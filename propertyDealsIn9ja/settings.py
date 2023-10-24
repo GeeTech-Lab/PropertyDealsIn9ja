@@ -21,6 +21,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
+    "daphne",
     'channels',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     'apps.enquiries',
     'apps.chats',
     'apps.inboxes',
+    'apps.articles',
+    'apps.promos',
 
     # Third party app...
     'django_extensions',
@@ -54,11 +57,51 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'widget_tweaks',
     'crispy_forms',
-    # 'guardian',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 ]
 
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'),
+            'secret': os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'),
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+            'openid',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'offline'
+        }
+    }
+}
+
 SITE_ID = 1
-SITE_NAME = "PropertyDealsIn9ja"
+
+LOGIN_URL = 'accounts/login'
+LOGIN_REDIRECT_URL = 'home'
+
+ACCOUNT_LOGOUT_ON_GET = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -69,8 +112,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',  # Social auth
     'apps.accounts.middleware.LastVisitMiddleware',
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'propertyDealsIn9ja.urls'
@@ -87,7 +131,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.notifications.views.notification_counts',
-                'social_django.context_processors.backends',  # Social auth
             ],
         },
     },
@@ -187,26 +230,7 @@ GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
 # Default authentication model...
 AUTH_USER_MODEL = "accounts.User"
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Default authentication model...
-AUTH_USER_MODEL = "accounts.User"
-
-# Social app custom settings
-AUTHENTICATION_BACKENDS = (
-    'social_core.backends.google.GoogleOAuth2',
-    'django.contrib.auth.backends.ModelBackend', # this is default
-    'apps.accounts.backends.MyBackend'
-)
-
-LOGIN_URL = 'accounts/login'
-LOGIN_REDIRECT_URL = 'home'
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -252,19 +276,6 @@ FILE_UPLOAD_PERMISSION = 0o640
 
 MESSAGE_TAGS = {
     messages.ERROR: "danger"
-}
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-            'redirect_uri': 'http://127.0.0.1:8000/'
-        }
-    }
 }
 
 GOOGLE_MAPS_API_KEY = "YOU_SECRET_KEY"

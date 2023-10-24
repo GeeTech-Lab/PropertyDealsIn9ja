@@ -93,7 +93,9 @@ class SendDirectMessage(View):
         to_user = User.objects.get(username=to_user_username)
         InboxMessage.send_message(from_user, to_user, msg)
         # return render(request, self.template_name)
-        return HttpResponse(f"<script type=text/javascript>toastr.success('Message sent successfully')</script>")
+        return HttpResponse(
+            "<script type=text/javascript>toastr.success('Message sent successfully')</script>"
+        )
 
     # Send Direct message to user
     # def post(self, request, **kwargs):
