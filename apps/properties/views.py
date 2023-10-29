@@ -190,11 +190,6 @@ class PropertyCreateView(LoginRequiredMixin, View):
             img_doc.save()
 
 
-# def upload_file(request):
-#     print(request.FILES.getlist('img_list'))
-#     return JsonResponse("Ok", safe=False)
-
-
 class PropertyUpdateView(LoginRequiredMixin, UpdateView):
     model = Property
     featured_price = 500

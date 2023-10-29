@@ -1,120 +1,122 @@
-from datetime import datetime
-import humanize
-from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.serializers import serialize
-from django.forms import model_to_dict
-from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
-from django.shortcuts import render, redirect
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.utils import timezone
 from django.views import View
 from apps.accounts.models import User
 from apps.inboxes.models import InboxMessage
 
 
 class InboxMessageView(LoginRequiredMixin, View):
-    template_name = "inboxes/lobby.html"
+    template_name = "inboxes/lobby_v2.html"
 
     def get(self, request, **kwargs):
         user = request.user
-        messages = InboxMessage.get_messages(user=user)
-        active_direct = None
-        directs = None
+        received_messages = InboxMessage.objects.filter(msg_receiver=user)
+        sent_messages = InboxMessage.objects.filter(msg_sender=user)
 
-        if messages:
-            message = messages[0]
-            active_direct = message['user']
-            directs = InboxMessage.objects.filter(user=user, msg_receiver=message['user'])
-            directs.update(is_seen=True)
+        # Combine both lists of users
+        all_users = User.objects.filter(
+            Q(pk__in=InboxMessage.objects.filter(msg_receiver=user).values_list('msg_sender', flat=True)) |
+            Q(pk__in=InboxMessage.objects.filter(msg_sender=user).values_list('msg_receiver', flat=True))
+        ).distinct()
 
-            for msg in messages:
-                if msg["user"].username == active_direct.username:
-                    msg['unread'] = 0
+        message_threads = []
+
+        for other_user in all_users:
+            # Get the messages sent to and received from the other user
+            messages_sent = sent_messages.filter(msg_receiver=other_user)
+            messages_received = received_messages.filter(msg_sender=other_user)
+
+            # Calculate the number of "is_seen" messages
+            seen_messages_count = messages_sent.filter(is_seen=False).count()
+
+            # Get the last message
+            last_message = messages_sent.union(messages_received).latest("sent_at")
+
+            message_threads.append({
+                "other_user": other_user,
+                "messages_sent": messages_sent,
+                "messages_received": messages_received,
+                "seen_messages_count": seen_messages_count,
+                "last_message": last_message,
+            })
         context = {
-            'directs': directs,
-            'messages': messages,
-            'active_direct': active_direct,
+            'received_messages': received_messages,
+            'sent_messages': sent_messages,
+            'all_users': all_users,
+            'message_threads': message_threads
         }
         return render(request, self.template_name, context)
 
 
-class DirectMessage(View):
-    template_name = "inboxes/lobby.html"
+class GetUserAndMessages(View):
 
-    def get(self, request, username, **kwargs):
-        user = request.user
-        msgs = InboxMessage.get_messages(user=user)
-        active_direct = User.objects.get(username=username)
-        directs = InboxMessage.objects.filter(user=user, msg_receiver__username=username)
-        directs.update(is_seen=True)
+    def get(self, request):
+        if request.method == 'GET':
+            if sid := request.GET.get('sid', None):
 
-        for msg in msgs:
-            if msg['user'].username == username:
-                msg['unread'] = 0
-        context = {
-            'directs': directs,
-            'messages': msgs,
-            'active_direct': active_direct,
-        }
-        return render(request, self.template_name, context)
+                # Fetch the user based on 'sid' (replace this with your logic)
+                user = User.objects.get(id=sid)
 
-    # Send Direct message to user
-    def post(self, request, **kwargs):
-        from_user = self.request.user
-        to_user_username = request.POST.get('to_user')
-        print(to_user_username)
-        msg = request.POST.get('message')
-        to_user = User.objects.get(username=to_user_username)
-        InboxMessage.send_message(from_user, to_user, msg)
-        # return render(request, self.template_name)
-        return HttpResponse(f'''
-        <li class="media reply first" id="reply_msg">
-            <div class="media-body text-right">
-                <div class="date_time">{humanize.naturaltime(datetime.now())}</div>
-                <p>{msg}</p>
-            </div>
-        </li>''')
-        # context_data = {
-        #     "success_msg": "Message sent!",
-        #     "message": msg,
-        #     "time_sent": datetime.now()
-        # }
-        # return JsonResponse(data=context_data, safe=False)
+                # Fetch messages related to the current user and the fetched user
+                messages = InboxMessage.objects.filter(
+                    Q(msg_sender=request.user, msg_receiver=user) |
+                    Q(msg_sender=user, msg_receiver=request.user)
+                ).order_by('sent_at')
+
+                # Update all messages to set is_seen=True
+                messages.update(is_seen=True)
+
+                # Prepare data to send back to the frontend
+                user_data = {
+                    'id': user.id,
+                    'username': user.username.title(),
+                    'full_name': user.full_name,
+                    'img': user.profile.image_url,
+                    'online_status': user.is_online,
+                    'last_visit': naturaltime(user.last_visit)
+                }
+
+                messages_data = [
+                    {
+                        'sender_id': msg.msg_sender.id,
+                        'receiver_id': msg.msg_receiver.id,
+                        'message': msg.message,
+                        'sent_at': naturaltime(msg.sent_at),
+                    }
+                    for msg in messages
+                ]
+
+                return JsonResponse({
+                    'user': user_data,
+                    'messages': messages_data,
+                })
+        return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 class SendDirectMessage(View):
-    template_name = "inboxes/lobby.html"
 
     # Send Direct message to user
     def post(self, request, **kwargs):
         from_user = request.user
-        to_user_username = request.POST.get('to_user')
-        print(to_user_username)
-        msg = request.POST.get('message')
-        to_user = User.objects.get(username=to_user_username)
-        InboxMessage.send_message(from_user, to_user, msg)
-        # return render(request, self.template_name)
-        return HttpResponse(
-            "<script type=text/javascript>toastr.success('Message sent successfully')</script>"
-        )
-
-    # Send Direct message to user
-    # def post(self, request, **kwargs):
-    #     from_user = self.request.user
-    #     to_user_username = request.POST.get('to_user')
-    #     msg = request.POST.get('message')
-    #     to_user = User.objects.get(username=to_user_username)
-    #     InboxMessage.send_message(from_user, to_user, msg)
-    #     print(to_user_username)
-    #     msgs = InboxMessage.get_messages(user=from_user)
-    #     context_data = {
-    #         "success_msg": "Message sent!",
-    #         "messages": msgs,
-    #     }
-    #     return JsonResponse(data=context_data, safe=False)
-    #     # context = {
-    #     #     "messages": msgs,
-    #     # }
-    #     # messages.success(request, "Message sent successfully")
-    #     # return render(request, self.template_name, context)
-    #     # return HttpResponse("<script type=text/javascript>toastr.success('Message sent successfully')</script>")
-
+        print(f"""
+            to_user: {request.POST.get('to_user')}
+            msg_content: {request.POST.get('message')}
+        """)
+        to_user = User.objects.get(username=request.POST.get('to_user').lower())
+        if msg_content := request.POST.get('message'):
+            msg = InboxMessage.objects.create(
+                msg_sender=from_user,
+                msg_receiver=to_user,
+                message=msg_content
+            )
+            msg.save()
+        return JsonResponse({
+            "status": "success",
+            "message": "Message sent successfully",
+            "msg_content": msg_content,
+            "msg_time": naturaltime(timezone.now())
+        })

@@ -116,7 +116,7 @@ class Review(models.Model):
 @receiver(post_save, sender=Review)
 def agent_review_comment(sender, instance, *args, **kwargs):
     review = instance
-    agent = review.agent.business_user
+    agent = review.agent
     sender = review.user
     text_preview = review.comment[:50]
     message = f"{sender} just reviewed your agency."

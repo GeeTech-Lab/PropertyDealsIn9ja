@@ -29,7 +29,9 @@
 									<li><a><strong>Gender: </strong>{{user.profile.gender}}</a></li>
 									<li><a><strong>Mobile: </strong>{{user.phone}}</a></li>
 									<li><a><strong>Email: </strong>{{user.email}}</a></li>
-									{% if user.is_agent %}
+									{% if user.is_agent and user.is_on_promo %}
+										<li><a><strong>Balance: </strong>You are currently on free trial <span class="badge bg-warning text-white p-2">{{user.my_promo.promo_duration}} days remaining</span></a></li>
+									{% elif user.is_agent %}
 										<li><a><strong>Balance: </strong>{{user.wallet.currency}}{{user.wallet.balance|intcomma}}</a></li>
 									{% endif %}
 								</ul>
@@ -67,7 +69,11 @@
 										<li><a>Mobile: {{user.agent.get_business_phone}}</a></li>
 										<li><a>Email: {{user.agent.get_business_email}}</a></li>
 										<li><a>Date Registered: {{user.agent.date_registered|naturalday}}</a></li>
-										<li><a>Balance: {{user.wallet.currency}}{{user.wallet.balance|intcomma}}</a></li>
+										{% if user.is_on_promo %}
+											<li><a>Balance: You are currently on free trial <span class="badge bg-warning text-white p-2">{{user.my_promo.promo_duration}} days remaining</span></a></li>
+										{% else %}
+											<li><a>Balance: {{user.wallet.currency}}{{user.wallet.balance|intcomma}}</a></li>
+										{% endif %}
 									</ul>
 								</div>
 								<div class="fp_footer">

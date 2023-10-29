@@ -1,11 +1,8 @@
-import datetime
-
 from django.contrib.humanize.templatetags.humanize import naturaltime
-from django.core import cache
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.dispatch import receiver
-from django.db.models.signals import post_save, post_delete, pre_save, pre_delete
+from django.db.models.signals import pre_save
 from django.utils import timezone
 from phonenumber_field.modelfields import PhoneNumberField
 from propertyDealsIn9ja.utils import unique_slug_generator
@@ -46,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def get_full_name(self):
-        return f"{self.full_name.title()}"
+        return f"{self.full_name.title()}" if self.full_name else f"{self.username.title()}"
 
     @property
     def get_short_name(self):
