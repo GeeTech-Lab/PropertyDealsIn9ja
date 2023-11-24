@@ -1,10 +1,199 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'layout.html' %}
+{% load static %}
+{% load humanize %}
 
-</body>
-</html>
+{% block title %}{{article.title}}{% endblock title %}
+
+{% block content %}
+    <!-- Blog Single Post -->
+    <section class="blog_post_container bgc-f7 pb30">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="breadcrumb_content style2">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                            <li class="breadcrumb-item active text-thm" aria-current="page"><a href="{% url 'articles:list' %}">News Lists</a></li>
+                        </ol>
+                        <h2 class="breadcrumb_title">Blog</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="main_blog_post_content">
+                        <div class="mbp_thumb_post">
+                            <div class="blog_sp_tag"><a href="#">{{article.category.title}}</a></div>
+                            <h3 class="blog_sp_title">{{article.title}}</h3>
+                            <ul class="blog_sp_post_meta">
+                                <li class="list-inline-item"><a href="#"><img src="{{article.author.profile.image_url}}" style="width:40px; height: 40px; border-radius: 50%;" alt="{{article.title}}"></a></li>
+                                <li class="list-inline-item"><a href="#">{{article.author.get_full_name}}</a></li>
+                                <li class="list-inline-item"><span class="flaticon-calendar"></span></li>
+                                <li class="list-inline-item"><a>{{article.created}}</a></li>
+                                <li class="list-inline-item"><span class="flaticon-view"></span></li>
+                                <li class="list-inline-item"><a> {{ article.view_count }} views</a></li>
+                                <li class="list-inline-item"><span class="flaticon-chat"></span></li>
+                                <li class="list-inline-item"><a>{{comments.count}}</a></li>
+                            </ul>
+                            <div class="thumb">
+                                <img class="img-fluid" src="{{article.image_url}}" style="width:100vw; height: 60vh;" alt="{{article.title}}">
+                            </div>
+                            <div class="details">
+                                <p class="mb30">{{article.content|safe}}</p>
+                            </div>
+                            <ul class="blog_post_share">
+                                <li><p>Share</p></li>
+                                <li><a><i class="fa fa-share"></i></a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Comment Layout -->
+                        <div class="product_single_content mb30 mt30">
+                            <div class="mbp_pagination_comments">
+                                <div class="total_review">
+                                    <h4>{{comments.count}} Reviews</h4>
+                                </div>
+                                <div id="comment_list">
+                                    {% for c in comments %}
+                                        <div class="mbp_first media">
+                                            <img src="{{c.author.profile.image_url}}" style="width:40px; height: 40px; border-radius: 50%;" class="mr-3" alt="{{c.author.username}}">
+                                            <div class="media-body">
+                                                <h4 class="sub_title mt-0">{{c.author.get_full_name}}</h4>
+                                                <a class="sspd_postdate fz14" href="#">{{c.created_at}}</a>
+                                                <p class="fz14 mt10">{{c.content|safe}}</p>
+                                            </div>
+                                        </div>
+                                    {% empty %}
+                                        <p class="text-center">No comment for this article yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comment Form Layout -->
+                        <div class="bsp_reveiw_wrt">
+                            <h4>Write a Comment</h4>
+                            <form class="comment_form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <textarea class="form-control" id="comment_content" rows="3" placeholder="Your Comment"></textarea>
+                                </div>
+                                <button type="button" class="btn btn-thm" id="submit_comment">Submit Comment</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Related Article Layout -->
+                    <div class="row">
+                        <div class="col-lg-12 mb20">
+                            <h4>Related Posts</h4>
+                        </div>
+                        {% for c in related_articles %}
+                            <div class="col-md-6 col-lg-6">
+                                <div class="for_blog feat_property">
+                                    <div class="thumb">
+                                        <img class="img-whp" height="200px" width="100%" style="background-size: cover; background-position: center-center" src="{{c.image_url}}">
+                                        <div class="tag">{{c.category}}</div>
+                                    </div>
+                                    <div class="details">
+                                        <div class="tc_content">
+                                            <h4>{{c.title}}</h4>
+                                            <ul class="bpg_meta">
+                                                <li class="list-inline-item"><a href="#"><i class="flaticon-calendar"></i></a></li>
+                                                <li class="list-inline-item"><a href="#">{{c.created}}</a></li>
+                                            </ul>
+                                            <p>{{c.description|safe}}</p>
+                                        </div>
+                                        <div class="fp_footer">
+                                            <ul class="fp_meta float-left mb0">
+                                                <li class="list-inline-item"><a href="#"><img src="{{c.author.profile.image_url}}" style="width:40px; height: 40px; border-radius: 50%;" alt="{{c.author.username}}"></a></li>
+                                                <li class="list-inline-item"><a href="#">{{c.author.get_full_name}}</a></li>
+                                            </ul>
+                                            <a class="fp_pdate float-right text-thm" href="{% url 'articles:detail' c.slug %}">Read More <span class="flaticon-next"></span></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
+                <!-- Category and Features Layout -->
+                <div class="col-lg-4">
+                    <div class="terms_condition_widget">
+                        <h4 class="title">Categories</h4>
+                        <div class="widget_list">
+                            <ul class="list_details">
+                                {% for c in categories %}
+                                    <li><a href="#"><i class="fa fa-caret-right mr10"></i>{{c.title}} <span class="float-right">{{ c.articles_set.all|length }} articles</span></a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar_feature_listing">
+                        <h4 class="title">Featured Listings</h4>
+                        {% for f in featured_properties %}
+                            <div class="media">
+                                <img class="align-self-start mr-3" src="{{f.check_image_url}}" alt="{{f.name}}">
+                                <div class="media-body">
+                                    <h5 class="mt-0 post_title">{{f.name}}</h5>
+                                    <a href="#">N{{f.price}}/<small>/{{f.payment_plan}}</small></a>
+                                    <ul class="mb0">
+                                        <li class="list-inline-item">Beds: {{f.no_bed_room}}</li>
+                                        <li class="list-inline-item">Baths: {{f.no_bath_room}}</li>
+                                        <li class="list-inline-item">Sq Ft: {{f.plot_area}}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block js %}
+    <script>
+        $(document).ready(function(){
+            $("#submit_comment").click(function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'articles:detail' article.slug %}",
+                    data: {
+                        content: $("#comment_content").val(),
+                        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+                    },
+                    success: function(response) {
+                        console.log("Form submitted successfully");
+                        showSuccessNotification(response.message);
+                        if (response.status === "success") {
+                            // Reset form after request is success...
+                            $("#comment_form").trigger("reset");
+
+                            const comment = `
+                                <div class="mbp_first media">
+                                    <img src="${response.img}" style="width:40px; height: 40px; border-radius: 50%;" class="mr-3" alt="${response.author}">
+                                    <div class="media-body">
+                                        <h4 class="sub_title mt-0">${response.author}</h4>
+                                        <a class="sspd_postdate fz14">${response.created_at}</a>
+                                        <p class="fz14 mt10">${response.content}</p>
+                                    </div>
+                                </div>
+                            `
+                            $("#comment_list").append(comment);
+                        }
+                    },
+                    error: function(response) {
+                        showErrorNotification(response.message);
+                    },
+                    complete: function() {
+                        console.log("Form submitted successfully");
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock js %}

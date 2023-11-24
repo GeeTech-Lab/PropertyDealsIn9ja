@@ -10,6 +10,7 @@ from propertyDealsIn9ja.views import HomeView, filter_property
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('tinymce/', include('tinymce.urls')),
     path('', csrf_exempt(HomeView.as_view()), name='home'),
     path('api-auth/', include('rest_framework.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -28,7 +29,7 @@ urlpatterns = [
     path('inbox/', include(('apps.inboxes.urls', 'apps.inboxes'), namespace='inboxes')),
     path('notifications/', include(('apps.notifications.urls', 'apps.notifications'), namespace='notifications')),
     path('filter_property/', csrf_exempt(filter_property), name='filter_property'),
-
+    path('articles/', include(('apps.articles.urls', 'apps.articles'), namespace="articles")),
 ]
 
 if DEBUG:

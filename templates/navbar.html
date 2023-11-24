@@ -35,6 +35,7 @@
                     <li><a href="{% url 'enquiries:list' %}"><span class="title">Enquiries</span></a></li>
                 {% endif %}
                 <li><a href="{% url 'agents:list' %}"><span class="title">Agents</span></a></li>
+                <li><a href="{% url 'articles:list' %}"><span class="title">News</span></a></li>
                 <li class="last"><a href="{% url 'contacts:contact' %}"><span class="title">Contact</span></a></li>
                 {% if request.user.is_authenticated %}
                     <li class="list-inline-item list_s">

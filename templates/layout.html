@@ -10,6 +10,8 @@
     <!-- Responsive stylesheet -->
     <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'toastr/toastr.min.css' %}" media="all">
+    <!-- iziToast Css -->
+    <link href="{% static 'iziToast/css/iziToast.min.css' %}" rel="stylesheet" type="text/css">
     <!-- Title -->
     <title>{% block title %}{% endblock title %} | PropertyIn9ja</title>
     <!-- Favicon -->
@@ -80,6 +82,7 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+
         <script>
             var bsCarouselItems = 1;
             if($('.bs_carousel .carousel-item').length){
