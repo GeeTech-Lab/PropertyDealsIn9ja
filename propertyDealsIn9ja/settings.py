@@ -106,6 +106,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SEC
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
@@ -215,8 +216,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# STATIC_ROOT = os.path.join(BASE_DIR, 'propin9ja', 'static')
-STATIC_ROOT = '/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

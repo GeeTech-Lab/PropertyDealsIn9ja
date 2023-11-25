@@ -9,21 +9,21 @@ Tag: advanced custom search, agency, agent, business, clean, corporate, director
 
 ********/
 /* CSS Document */
-@import url(../css/jquery-ui.min.css);
-@import url(../css/font-awesome.min.css);
-@import url(../css/font-awesome-animation.min.css);
-@import url(../css/menu.css);
-@import url(../css/ace-responsive-menu.css);
-@import url(../css/megadropdown.css);
-@import url(../css/bootstrap-select.min.css);
-@import url(../css/simplebar.min.css);
-@import url(../css/progressbar.css);
-@import url(../css/flaticon.css);
-@import url(../css/animate.css);
-@import url(../css/slider.css);
-@import url(../css/magnific-popup.css);
-@import url(../css/timecounter.css);
-@import url(https://fonts.googleapis.com/css?family=Nunito:400,400i,600,700&display=swap);
+@import url(jquery-ui.min.css);
+@import url(font-awesome.min.css);
+@import url(font-awesome-animation.min.css);
+@import url(menu.css);
+@import url(ace-responsive-menu.css);
+@import url(megadropdown.css);
+@import url(bootstrap-select.min.css);
+@import url(simplebar.min.css);
+@import url(progressbar.css);
+@import url(flaticon.css);
+@import url(animate.css);
+@import url(slider.css);
+@import url(magnific-popup.css);
+@import url(timecounter.css);
+@import url(https://fonts.googleapis.com/css?family=Nunito:400,400i,600,700&amp;display=swap);
 /* Table of contents */
 
 
@@ -1364,13 +1364,6 @@ header.header-nav.menu_style_home_one.style2.home3{
 }
 header.header-nav.menu_style_home_one.style2 a.navbar_brand{
   margin-top: 20px;
-}
-header.header-nav.menu_style_home_one.style2 a.navbar_brand span{
-  color: #484848;
-  font-family: "Nunito";
-  font-size: 28px;
-  font-weight: bold;
-  line-height: 1.2;
 }
 header.header-nav.menu_style_home_one.style2.home10,
 header.header-nav.menu_style_home_one.style2.home10 .ace-responsive-menu li ul.sub-menu,
@@ -4436,6 +4429,7 @@ form.home5_advanced_search_form .form-group input.form-control::-ms-input-placeh
   margin-right: 0;
 }
 .feat_property .thumb .thmb_cntnt ul.tag li a,
+.feat_property .thumb .thmb_cntnt ul.tag li span,
 .properti_city.home6 .thumb .thmb_cntnt ul.tag li a,
 .feat_property.home8 ul.tag li a,
 .feat_property.list ul.tag li a{
@@ -4486,7 +4480,7 @@ form.home5_advanced_search_form .form-group input.form-control::-ms-input-placeh
 .feat_property.home8 .icon li:last-child{
   margin-right: 0;
 }
-.feat_property .thumb .thmb_cntnt a.fp_price{
+.feat_property .thumb .thmb_cntnt .fp_price{
   bottom: 15px;
   font-size: 22px;
   font-family: "Nunito";
@@ -5363,28 +5357,30 @@ form.home5_advanced_search_form .form-group input.form-control::-ms-input-placeh
 .spls_style_two{
   position: relative;
 }
-.spls_style_two .overlay{
-  bottom: 0;
-  border-radius: 8px;
-  background-color: rgba(29, 41, 62, 0.8);
-  cursor: pointer;
+.spls_style_two .title{
+  color: #FFFFFF;
+  font-family: "Nunito";
+  font-size: 26px;
+  font-weight: bold;
   left: 0;
-  margin-bottom: 0;
-  padding-top: 35%;
+  line-height: 1;
   position: absolute;
   right: 0;
   text-align: center;
-  top: 0;
+  top: 45%;
 }
-.spls_style_two .overlay .title{
-  font-size: 26px;
-  font-family: "Nunito";
-  color: rgb(255, 255, 255);
-  font-weight: bold;
-  line-height: 1;
+.spls_style_two .title a{
+  color: #FFF;
 }
 .spls_style_two img{
   border-radius: 8px;
+}
+.spls_style_two.end_style{
+  background-color: #1d293e;
+  border-radius: 6px;
+}
+.spls_style_two.end_style img{
+  opacity: .2;
 }
 .faq_according .accordion .card.floor_plan{
   outline: none;
@@ -7060,7 +7056,7 @@ form.home5_advanced_search_form .form-group input.form-control::-ms-input-placeh
   background-color: transparent;
 }
 .footer_one.home8:before{
-  background-image: url(../images/background/3.png);
+  background-image: url(../images/background/3.html);
   -webkit-background-size: cover;
   background-size: cover;
   background-position: center center;
@@ -11835,7 +11831,7 @@ a.btn.btn_error{
   background-color: #ffffff;
   border: 1px solid rgb(235, 235, 235);
   border-radius: 8px;
-  height: auto;
+  height: 100%;
   position: relative;
 }
 .inbox_user_list {
@@ -11844,7 +11840,7 @@ a.btn.btn_error{
   width: 100%;
 }
 .inbox_user_list ul{
-  height: 100%;
+  height: 625px;
   overflow-y: scroll;
 }
 .inbox_user_list ul::-webkit-scrollbar {
@@ -12485,7 +12481,7 @@ a.btn.btn_error{
   width: 100%;
   overflow: hidden;
   cursor: pointer;
-  background-image: url('https://res.cloudinary.com/geetechlab-com/image/upload/v1583147406/nwaben.com/user_azjdde_sd2oje.jpg');
+  background-image: url(../images/team/upload_photo.jpg);
   border-radius: 5px;
   -webkit-transition: -webkit-transform 0.4s;
   transition: -webkit-transform 0.4s;
@@ -15007,7 +15003,7 @@ a.scrollToHome.home8{
   padding-top: 135px;
 }
 .divider2:before{
-  background-image: url(../images/background/2.png);
+  background-image: url(../images/background/2.html);
   background-repeat: no-repeat;
   bottom: 0;
   content: "";
