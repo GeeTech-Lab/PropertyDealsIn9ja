@@ -1,27 +1,20 @@
-FROM python:3.10
-ENV PYTHONUNBUFFERED 1
-
-COPY requirements.txt /app/requirements.txt
-
-# This will install the libpq-dev package which includes the pg_config
-RUN apt-get update && apt-get install -y libpq-dev
-
-RUN set -ex \
-    # Runs pip commands and gets latest version of pip...
-    && pip install --upgrade pip \
-    # Install all from project requirements.txt to application requirements.txt
-    && pip install --no-cache-dir -r /app/requirements.txt
-
-# Working directory
+FROM python:3.9-slim
 WORKDIR /app
 
-COPY . .
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
 
-#====Defining connection port====
-EXPOSE 8000
+# install system dependencies
+RUN apt-get update
 
-#====Running docker locally====
-ENTRYPOINT ["gunicorn", "propertyDealsIn9ja.wsgi"]
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /app/
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT ["gunicorn", "legacy_kitchen_lounge.wsgi"]
 
 ##====Running docker locally====
 #CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "propertyDealsIn9ja.wsgi:application"]
