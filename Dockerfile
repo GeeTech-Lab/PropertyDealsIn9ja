@@ -14,7 +14,7 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT ["gunicorn", "legacy_kitchen_lounge.wsgi"]
+ENTRYPOINT ["gunicorn", "propertyDealsIn9ja.wsgi"]
 
 ##====Running docker locally====
 #CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "propertyDealsIn9ja.wsgi:application"]
