@@ -2,20 +2,18 @@ from datetime import timedelta
 from pathlib import Path
 import os
 
+from decouple import config
 from django.contrib import messages
 from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.environ.get("DEBUG", 1)))
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -78,8 +76,8 @@ AUTHENTICATION_BACKENDS = [
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'),
-            'secret': os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'),
+            'client_id': config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'),
+            'secret': config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'),
         },
         'SCOPE': [
             'profile',
@@ -100,8 +98,8 @@ LOGIN_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 
 MIDDLEWARE = [
@@ -158,16 +156,16 @@ DATABASES = {
     }
 }
 
-DB_USERNAME = os.environ.get("POSTGRES_USER")
-DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-DB_DATABASE = os.environ.get("POSTGRES_DB")
-DB_HOST = os.environ.get("POSTGRES_HOST")
-DB_PORT = os.environ.get("POSTGRES_PORT")
+DB_USERNAME = config("POSTGRES_USER")
+DB_PASSWORD = config("POSTGRES_PASSWORD")
+DB_DATABASE = config("POSTGRES_DB")
+DB_HOST = config("POSTGRES_HOST")
+DB_PORT = config("POSTGRES_PORT")
 DB_IS_AVAIL = all([
     DB_USERNAME,
 ])
 
-POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == "1"
+POSTGRES_READY = str(config('POSTGRES_READY')) == "1"
 
 if DB_IS_AVAIL and POSTGRES_READY:
     DATABASES = {
@@ -253,7 +251,7 @@ SIMPLE_JWT = {
     ),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
-    'SIGNING_KEY': "os.environ.get('SIGNING_KEY')",
+    'SIGNING_KEY': "config('SIGNING_KEY')",
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
@@ -266,12 +264,12 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 # Email Settings...
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
-SUPPORT_EMAIL = os.environ.get('SUPPORT_EMAIL')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+SUPPORT_EMAIL = config('SUPPORT_EMAIL')
 
 # This validates the file size...
 FILE_UPLOAD_PERMISSION = 0o640
@@ -283,7 +281,7 @@ MESSAGE_TAGS = {
 GOOGLE_MAPS_API_KEY = "YOU_SECRET_KEY"
 
 import tinify
-tinify.key = os.environ.get('tinify_key')
+tinify.key = config('tinify_key')
 
 TINYMCE_JS_URL = os.path.join(STATIC_URL, "assets/tinymce/js/tinymce/tinymce.min.js")
 TINYMCE_DEFAULT_CONFIG = {

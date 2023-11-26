@@ -1,38 +1,58 @@
 {% load static %}
 
-<div class="dashboard_navigationbar dn db-992">
-    <div class="dropdown">
-        <button onclick="myFunction()" class="dropbtn"><i class="fa fa-bars pr10"></i> Dashboard Navigation</button>
-        <ul id="myDropdown" class="dropdown-content">
-            {% if request.user.is_staff %}
-                <li><a href="/admin/"><span class="flaticon-layers"></span> Admin Dashboard</a></li>
-            {% endif %}
-            {% if request.user.is_agent %}
-                <li><a href="{% url 'properties:property_dashboard' %}"><span class="flaticon-layers"></span> Dashboard</a></li>
-                <li><a href="{% url 'properties:get_my_property_list' %}"><span class="flaticon-home"></span> My Properties</a></li>
-                <li><a href="{% url 'properties:create' %}"><span class="flaticon-home"></span> Add Properties</a></li>
-                <li><a href="{% url 'agents:my_reviews' %}"><span class="flaticon-chat"></span> My Reviews</a></li>
-                <li><a href="{% url 'wallets:fund_wallet' request.user.wallet.uid %}"><i class="fa fa-credit-card fa-lg"></i> My Wallet</a></li>
-                <li><a href="{% url 'enquiries:agent_enquiry_list' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</a></li>
-            {% else %}
-                <li><a href="{% url 'enquiries:my_enquiries' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</a></li>
-            {% endif %}
-            <li><a href="{% url 'inboxes:inbox_msg' %}"><span class="flaticon-envelope"></span> Message</a></li>
-            <li><a href="{% url 'properties:get_favourites' %}"><span class="flaticon-heart"></span> My Favorites</a></li>
-            <li>
-                <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}">
-                    <span class="flaticon-user"></span> My Profile
+<!-- Main Header Nav For Mobile -->
+<div id="page" class="stylehome1 h0">
+    <div class="mobile-menu">
+        <div class="header stylehome1">
+            <div class="d-flex justify-content-between">
+                <a class="mobile-menu-trigger" href="#menu"><img src="{% static 'images/dark-nav-icon.svg' %}" alt=""></a>
+                <a class="nav_logo_img" href="{% url 'home' %}"><img class="img-fluid mt20" src="https://res.cloudinary.com/geetechlab-com/image/upload/v1672595643/propertyDealzin9ja/header-logo2_pficy7.png" alt="pd9ja"></a>
+                <a class="mobile-menu-reg-link" href="{% url 'profiles:profile_detail' request.user.profile.slug %}">
+                    <img class="rounded-circle" width="30px" height="30px" src="{{request.user.profile.image_url}}" alt="{{request.user.username}}">
                 </a>
-            </li>
-            {% if request.user.is_authenticated %}
+            </div>
+        </div>
+    </div><!-- /.mobile-menu -->
+
+
+    <nav id="menu" class="stylehome1">
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'properties:list' %}">Properties</a></li>
+            {% if request.user.is_agent %}
+                <li><a href="{% url 'enquiries:list' %}">Enquiries</a></li>
+            {% endif %}
+            <li><a href="{% url 'agents:list' %}">Agents</a></li>
+            <li><a href="{% url 'contacts:contact' %}">Contact</a></li>
+            {% if notifications.count %}
                 <li>
-                    <a href="{% url 'profiles:profile_update' request.user.profile.slug %}">
-                        <i class="fa fa-cogs"></i> Update Profile
+                    <a data-toggle="modal" data-target=".notification_modal">
+                        <span class="badge badge-pill badge-danger">
+                            <i class="fa fa-bell-o fa-2x"></i>
+                            <span class="badge badge-light">{{notifications.count}}</span>
+                        </span>
                     </a>
                 </li>
             {% endif %}
-            <li><a href="{% url 'accounts:logout' %}"><span class="flaticon-logout"></span> Logout</a></li>
+            {% if request.user.is_authenticated %}
+                <li><a href="{% url 'accounts:logout' %}"><span class="flaticon-edit"></span> Log out</a></li>
+                {% if request.user.is_agent %}
+                    <li class="cl_btn">
+                        <a class="btn btn-block btn-lg btn-thm circle" href="{% url 'properties:create' %}">
+                            <span class="flaticon-plus"></span> Add Property
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="cl_btn">
+                        <a class="btn btn-block btn-thm circle" href="{% url 'enquiries:create' %}">
+                            <span class="flaticon-plus"></span> Enquire
+                        </a>
+                    </li>
+                {% endif %}
+            {% else %}
+                <li><a href="{% url 'accounts:login' %}"><span class="flaticon-user"></span> Login</a></li>
+                <li><a href="{% url 'accounts:signup' %}"><span class="flaticon-edit"></span> Register</a></li>
+            {% endif %}
         </ul>
-    </div>
+    </nav>
 </div>
-

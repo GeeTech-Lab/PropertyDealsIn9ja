@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
-
 from apps.inboxes import views
+
 
 urlpatterns = [
     path('', views.InboxMessageView.as_view(), name='inbox_msg'),

@@ -1,4 +1,3 @@
-from msilib.schema import Property
 from django.contrib import messages
 from django.db.models import F
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse

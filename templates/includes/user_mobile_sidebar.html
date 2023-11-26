@@ -1,46 +1,38 @@
 {% load static %}
 
-<div class="dashboard_sidebar_menu dn-992">
-    <ul class="sidebar-menu">
-        <li class="header"><img width="120px" height="60px" src="https://res.cloudinary.com/geetechlab-com/image/upload/c_scale,h_500/v1672598092/propertyDealzin9ja/pd9ja_nav_logo-removebg-preview_qqpkjb.png" alt="header-logo2.png"></li>
-        <li class="title"><span>Main</span></li>
-        {% if request.user.is_agent %}
-            <li class="treeview">
-                <a href="{% url 'properties:property_dashboard' %}">
-                    <i class="flaticon-layers"></i>
-                    <span> Dashboard</span>
+<div class="dashboard_navigationbar dn db-992">
+    <div class="dropdown">
+        <button onclick="myFunction()" class="dropbtn"><i class="fa fa-bars pr10"></i> Dashboard Navigation</button>
+        <ul id="myDropdown" class="dropdown-content">
+            {% if request.user.is_staff %}
+                <li><a href="/admin/"><span class="flaticon-layers"></span> Admin Dashboard</a></li>
+            {% endif %}
+            {% if request.user.is_agent %}
+                <li><a href="{% url 'properties:property_dashboard' %}"><span class="flaticon-layers"></span> Dashboard</a></li>
+                <li><a href="{% url 'properties:get_my_property_list' %}"><span class="flaticon-home"></span> My Properties</a></li>
+                <li><a href="{% url 'properties:create' %}"><span class="flaticon-home"></span> Add Properties</a></li>
+                <li><a href="{% url 'agents:my_reviews' %}"><span class="flaticon-chat"></span> My Reviews</a></li>
+                <li><a href="{% url 'wallets:fund_wallet' request.user.wallet.uid %}"><i class="fa fa-credit-card fa-lg"></i> My Wallet</a></li>
+                <li><a href="{% url 'enquiries:agent_enquiry_list' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</a></li>
+            {% else %}
+                <li><a href="{% url 'enquiries:my_enquiries' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</a></li>
+            {% endif %}
+            <li><a href="{% url 'inboxes:inbox_msg' %}"><span class="flaticon-envelope"></span> Message</a></li>
+            <li><a href="{% url 'properties:get_favourites' %}"><span class="flaticon-heart"></span> My Favorites</a></li>
+            <li>
+                <a href="{% url 'profiles:profile_detail' request.user.profile.slug %}">
+                    <span class="flaticon-user"></span> My Profile
                 </a>
             </li>
-            <li class="treeview">
-                <a href="#"><i class="flaticon-home"></i>
-                    <span>Properties</span>
-                    <i class="fa fa-angle-down pull-right"></i>
-                </a>
-                <ul class="treeview-menu">
-                    <li><a href="{% url 'properties:get_my_property_list' %}"><i class="fa fa-circle"></i> My Properties</a></li>
-                    <li><a href="{% url 'properties:create' %}"><i class="fa fa-circle"></i> Add Properties</a></li>
-                </ul>
-            </li>
-            <li><a href="{% url 'wallets:fund_wallet' request.user.wallet.uid %}"><i class="fa fa-credit-card"></i><span>My Wallet</span></a></li>
-            <li class="treeview">
-                <a href="page-my-review.html">
-                    <i class="flaticon-chat"></i><span> Reviews</span>
-                    <i class="fa fa-angle-down pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="{% url 'agents:my_reviews' %}"><i class="fa fa-circle"></i> My Reviews</a></li>
-                </ul>
-            </li>
-            <li><a href="{% url 'enquiries:agent_enquiry_list' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</span></a></li>
-        {% endif %}
-        <li class="treeview"><a href="{% url 'inboxes:inbox_msg' %}"><i class="flaticon-envelope"></i><span> Message</span></a></li>
-        <li class="title"><span>Manage Listings</span></li>
-        {% if request.user.is_authenticated and not request.user.is_agent %}
-            <li><a href="{% url 'enquiries:my_enquiries' %}"><i class="fa fa-commenting-o fa-lg"></i> My Enquiries</span></a></li>
-        {% endif %}
-        <li><a href="{% url 'properties:get_favourites' %}"><i class="flaticon-heart"></i><span> My Favorites</span></a></li>
-        <li class="title"><span>Manage Account</span></li>
-        <li><a href="{% url 'profiles:profile_detail' request.user.profile.slug %}"><i class="flaticon-user"></i> <span>My Profile</span></a></li>
-        <li><a href="{% url 'profiles:profile_update' request.user.profile.slug %}"><i class="fa fa-cogs"></i> <span>Update Profile</span></a></li>
-        <li><a href="{% url 'accounts:logout' %}"><i class="flaticon-logout"></i> <span>Logout</span></a></li>
-    </ul>
+            {% if request.user.is_authenticated %}
+                <li>
+                    <a href="{% url 'profiles:profile_update' request.user.profile.slug %}">
+                        <i class="fa fa-cogs"></i> Update Profile
+                    </a>
+                </li>
+            {% endif %}
+            <li><a href="{% url 'accounts:logout' %}"><span class="flaticon-logout"></span> Logout</a></li>
+        </ul>
+    </div>
 </div>
+

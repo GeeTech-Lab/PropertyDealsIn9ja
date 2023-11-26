@@ -1,8 +1,6 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
-
-from . import views
-
+from apps.enquiries import views
 
 urlpatterns = [
     path('delete/<slug:slug>/', csrf_exempt(views.enquiry_delete_view), name='delete'),

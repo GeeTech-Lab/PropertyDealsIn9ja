@@ -1,7 +1,6 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
-from . import views
-
+from apps.profiles import views
 
 urlpatterns = [
     # path('select_currency/', csrf_exempt(views.select_currency), name='select_currency'),
