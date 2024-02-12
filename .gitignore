@@ -138,4 +138,4 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-docker_deploy_dir/
+deploy/docker_deploy_dir/

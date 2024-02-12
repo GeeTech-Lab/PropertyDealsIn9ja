@@ -13,12 +13,12 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY ./requirements.txt /app/
+COPY ../requirements.txt /app/
 RUN pip install --upgrade pip --no-cache-dir && \
     pip install -r requirements.txt --no-cache-dir
 
 # Copy the Django project files
-COPY . /app
+COPY .. /app
 
 # Collect static files (adjust as needed)
 #RUN python manage.py collectstatic --noinput

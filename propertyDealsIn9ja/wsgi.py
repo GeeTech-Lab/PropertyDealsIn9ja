@@ -21,3 +21,6 @@ dotenv.read_dotenv(str(ENV_FILE_PATH))
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'propertyDealsIn9ja.settings')
 
 application = get_wsgi_application()
+
+# For vercel deploy
+app = application

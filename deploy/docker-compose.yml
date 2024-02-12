@@ -2,9 +2,10 @@ version: "3"
 
 services:
   django_app:
-    build: .
+    container_name: volantba_container
+    build: ..
     env_file:
-      - .env
+      - ../.env
     volumes:
       - static_vol:/app/static
       - media_vol:/app/media
@@ -12,7 +13,7 @@ services:
       - "8000:8000"
 
   nginx:
-    build: ./nginx
+    build: ../nginx
     volumes:
       - static_vol:/app/static
       - media_vol:/app/media
